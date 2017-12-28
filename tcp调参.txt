@@ -1,0 +1,14 @@
+//设置保活检测的超时连接
+sysctl -w net.ipv4.tcp_keepalive_time=10
+//设置保活两次检测间隔时间
+sysctl -w net.ipv4.tcp_keepalive_intvl=3
+//设置保活检测次数
+sysctl -w net.ipv4.tcp_keepalive_probes=3
+//设置tcp重试次数
+sysctl -w net.ipv4.tcp_retries2=5
+//设置fin状态的句柄超时关闭时间
+sysctl -w net.ipv4.tcp_fin_timeout=5
+//设置syn重试次数
+sysctl -w net.ipv4.tcp_syn_retries=6
+//设置synack重试次数
+sysctl -w net.ipv4.tcp_synack_retries=5

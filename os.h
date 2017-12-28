@@ -141,20 +141,21 @@ static inline void keepalive(tp_socket socket,int keep)
 static inline void setSocket(tp_socket socket)
 {
 	int nNetTimeout = 1000; //1秒
-	setsockopt( socket, SOL_SOCKET, SO_SNDTIMEO, ( void * )&nNetTimeout, sizeof( int ) );
-	setsockopt( socket, SOL_SOCKET, SO_RCVTIMEO, ( void * )&nNetTimeout, sizeof( int ) );
-	//设置缓冲区
 	int nSendBufLen = 1 * 1024; //设置为32K
 	int nRecvBufLen = 1 * 1024; //设置为32K
-	setsockopt( socket, SOL_SOCKET, SO_SNDBUF, ( const void* )&nSendBufLen, sizeof( int ) );
-	setsockopt( socket, SOL_SOCKET, SO_SNDBUF, ( const char* )&nSendBufLen, sizeof( int ) );
-	//不执行将socket缓冲区的内容拷贝到系统缓冲区
 	int nZero = 0;
-	setsockopt( socket, SOL_SOCKET, SO_SNDBUF, ( char * )&nZero, sizeof( int ) );
-	setsockopt( socket, SOL_SOCKET, SO_RCVBUF, ( char * )&nZero, sizeof( int ) );
+	struct linger m_sLinger;
+
+	setsockopt( socket, SOL_SOCKET, SO_SNDTIMEO, (const char * )&nNetTimeout, sizeof( int ) );
+	setsockopt( socket, SOL_SOCKET, SO_RCVTIMEO, (const char * )&nNetTimeout, sizeof( int ) );
+	//设置缓冲区
+	setsockopt( socket, SOL_SOCKET, SO_SNDBUF, ( const char* )&nSendBufLen, sizeof( int ) );
+	setsockopt( socket, SOL_SOCKET, SO_RCVBUF, ( const char* )&nRecvBufLen, sizeof( int ) );
+	//不执行将socket缓冲区的内容拷贝到系统缓冲区
+	setsockopt( socket, SOL_SOCKET, SO_SNDBUF, (const char * )&nZero, sizeof( int ) );
+	setsockopt( socket, SOL_SOCKET, SO_RCVBUF, (const char * )&nZero, sizeof( int ) );
 
 	//设置关闭时清楚数据时限
-	struct linger m_sLinger;
 	m_sLinger.l_onoff = 1; //在调用close(socket)时还有数据未发送完，允许等待
 	// 若m_sLinger.l_onoff=0;则调用closesocket()后强制关闭
 	m_sLinger.l_linger = 5; //设置等待时间为5秒
